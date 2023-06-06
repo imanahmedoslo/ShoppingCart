@@ -1,89 +1,69 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
-namespace ShoppingCart
+
+namespace ShoppingCartOppgave
 {
-    class TheShoppingCart
+    class ShoppingCart
     {
-        public List<Item> Items { get; private set; }
-        public int NumOfProducts { get;  private set; }
-        public List <string> productNames { get; private set; }
-        public TheShoppingCart() {
-            Items=new List<Item>();
-           NumOfProducts = Items.Count;
-            productNames = new List<string>();
-        }
-        public void AddItemsToCart(Item item)
-        {
-           
-            Items.Add(item);
-            var AntallPrVare = GetAmountPerProduct(item);
-            NumOfProducts = Items.Count;
-            Console.WriteLine($"Du har {AntallPrVare} stk av {item.Product} i handlekurven din.");
 
+        public readonly List<CartItem> Products;
+
+        public ShoppingCart() {
+          
+            Products = new List<CartItem>();
+            
+        }
+        public void AddItemsToCart(Item item, int amount)
+        {
+            var newestItem = new CartItem(item, amount);
+            if (Products.Count == 0) {
+             
+                    Products.Add(newestItem); 
+            }
+            else if (Products.Count >0) {
+                foreach (var product in Products)
+                {
+                    if (product.AddedItem == item)
+                    {
+                        product.IncreaseAmount(amount);
+                        Console.WriteLine($"Du har {product.Amount} " +
+                            $"stk av {product.AddedItem.ProductName} i handlekurven din.");
+                        return;
+                    }   
+                }
+                Products.Add(newestItem);
+                Console.WriteLine($"Du har {newestItem.Amount} stk av " +
+                    $"{newestItem.AddedItem.ProductName} i handlekurven din.");
+            }
         }
         public void PrintProductList()
-        {
-
-            int TotalPris = 0;
-            if (Items.Count == 0)
+        {   int totalPris = 0;
+            if (Products.Count == 0)
             {
                 Console.WriteLine("handlekurv er tom");
                 return;
-
-            } else
-            {
-
-            
-
-               
-
-            foreach (var item in Items)
+            } 
+            foreach (var product in Products)
                 {
-                    var AntallPrVare = GetAmountPerProduct(item);
-                    int PrisPrVare = AntallPrVare * item.Price;
-
-
-                    if (productNames.Contains(item.Product))
-                    {
-                        continue;
-                    }
-                    else { 
-                    
-                    Console.WriteLine($"Handlekurv: Produkt: {item.Product}, Antall: {AntallPrVare}, Pris pr stk: {item.Price}, " +
-                            $"totalpris for produkt: {PrisPrVare}");
-                    productNames.Add(item.Product);
-                       
-                    
-                    //productNames.Add(item.Product);
-
+                    product.printCartItem();
+                    totalPris += product.CalculatePrice(); 
                 }
-                    TotalPris += PrisPrVare;
-                }
-
-                Console.WriteLine($"Totalpris: {TotalPris}. Sum antall produkter{NumOfProducts}");
+                Console.WriteLine($"Totalpris: {totalPris}. Sum antall produkter {SumAllProducts()}");
             }
-
-
-        }
-        public int GetAmountPerProduct(Item item)
-        {
-            int Count = 0;
-            foreach (var product in Items)
-            {
-                if (product == item)
-                {
-                    Count++;
-                }
+        public int SumAllProducts()
+        {  
+            int totalCount = 0;
+            foreach( var item in Products)
+            { 
+                totalCount+= item.Amount; 
             }
-            return Count;
+            return totalCount;
         }
-
-
 
     }
+      
+
+    
+
+   
 }
