@@ -5,65 +5,47 @@ namespace ShoppingCartOppgave
 {
     class ShoppingCart
     {
-
-        public readonly List<CartItem> Products;
-
-        public ShoppingCart() {
-          
-            Products = new List<CartItem>();
-            
+        public readonly List<CartItem> _products;
+        public ShoppingCart()
+        {
+            _products = new List<CartItem>();
         }
         public void AddItemsToCart(Item item, int amount)
         {
-            var newestItem = new CartItem(item, amount);
-            if (Products.Count == 0) {
-             
-                    Products.Add(newestItem); 
+            var existingProduct = _products.Find(product => product._addedItem == item);
+            if (existingProduct == null)
+            {
+                var newestItem = new CartItem(item, amount);
+                _products.Add(newestItem);
             }
-            else if (Products.Count >0) {
-                foreach (var product in Products)
-                {
-                    if (product.AddedItem == item)
-                    {
-                        product.IncreaseAmount(amount);
-                        Console.WriteLine($"Du har {product.Amount} " +
-                            $"stk av {product.AddedItem.ProductName} i handlekurven din.");
-                        return;
-                    }   
-                }
-                Products.Add(newestItem);
-                Console.WriteLine($"Du har {newestItem.Amount} stk av " +
-                    $"{newestItem.AddedItem.ProductName} i handlekurven din.");
+            else
+            {
+                existingProduct.IncreaseAmount(amount);
             }
         }
         public void PrintProductList()
-        {   int totalPris = 0;
-            if (Products.Count == 0)
+        {
+            int totalPris = 0;
+            if (_products.Count == 0)
             {
                 Console.WriteLine("handlekurv er tom");
                 return;
-            } 
-            foreach (var product in Products)
-                {
-                    product.printCartItem();
-                    totalPris += product.CalculatePrice(); 
-                }
-                Console.WriteLine($"Totalpris: {totalPris}. Sum antall produkter {SumAllProducts()}");
             }
+            foreach (var product in _products)
+            {
+                product.printCartItem();
+                totalPris += product.CalculatePrice();
+            }
+            Console.WriteLine($"Totalpris: {totalPris}. Sum antall produkter {SumAllProducts()}");
+        }
         public int SumAllProducts()
-        {  
+        {
             int totalCount = 0;
-            foreach( var item in Products)
-            { 
-                totalCount+= item.Amount; 
+            foreach (var item in _products)
+            {
+                totalCount += item._amount;
             }
             return totalCount;
         }
-
     }
-      
-
-    
-
-   
 }
