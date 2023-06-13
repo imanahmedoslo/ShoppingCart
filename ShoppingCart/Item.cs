@@ -1,36 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
-namespace ShoppingCart
+namespace ShoppingCartOppgave
 {
-     class Item
+    public class Item
     {
-        public string Product { get;  private set; }
-        public int Price { get; private set; }
-        //public int Amount { get; private set; } 
-
-        public Item(string name, int price) { 
-            Product = name;
-            Price = price;
-           
-        }
-
-       /* public int GetAmount( TheShoppingCart cart)
+        public string _productName;
+        public int _price;
+        public Item(string name, int price)
         {
-            int Count = 0;
-           foreach ( var item in cart.Items )
-            {
-                if (item==this)
-                {
-                    Count++;
-                }
-            } return Amount= Count;
-
-        }*/
-
-        
+            _productName = name;
+            _price = price;
+        }
     }
 }

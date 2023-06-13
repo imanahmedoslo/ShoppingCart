@@ -1,89 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
-namespace ShoppingCart
+
+namespace ShoppingCartOppgave
 {
-    class TheShoppingCart
+    class ShoppingCart
     {
-        public List<Item> Items { get; private set; }
-        public int NumOfProducts { get;  private set; }
-        public List <string> productNames { get; private set; }
-        public TheShoppingCart() {
-            Items=new List<Item>();
-           NumOfProducts = Items.Count;
-            productNames = new List<string>();
-        }
-        public void AddItemsToCart(Item item)
+        public readonly List<CartItem> _products;
+        public ShoppingCart()
         {
-           
-            Items.Add(item);
-            var AntallPrVare = GetAmountPerProduct(item);
-            NumOfProducts = Items.Count;
-            Console.WriteLine($"Du har {AntallPrVare} stk av {item.Product} i handlekurven din.");
-
+            _products = new List<CartItem>();
+        }
+        public void AddItemsToCart(Item item, int amount)
+        {
+            var existingProduct = _products.Find(product => product._addedItem == item);
+            if (existingProduct == null)
+            {
+                var newestItem = new CartItem(item, amount);
+                _products.Add(newestItem);
+            }
+            else
+            {
+                existingProduct.IncreaseAmount(amount);
+            }
         }
         public void PrintProductList()
         {
-
-            int TotalPris = 0;
-            if (Items.Count == 0)
+            int totalPris = 0;
+            if (_products.Count == 0)
             {
                 Console.WriteLine("handlekurv er tom");
                 return;
-
-            } else
-            {
-
-            
-
-               
-
-            foreach (var item in Items)
-                {
-                    var AntallPrVare = GetAmountPerProduct(item);
-                    int PrisPrVare = AntallPrVare * item.Price;
-
-
-                    if (productNames.Contains(item.Product))
-                    {
-                        continue;
-                    }
-                    else { 
-                    
-                    Console.WriteLine($"Handlekurv: Produkt: {item.Product}, Antall: {AntallPrVare}, Pris pr stk: {item.Price}, " +
-                            $"totalpris for produkt: {PrisPrVare}");
-                    productNames.Add(item.Product);
-                       
-                    
-                    //productNames.Add(item.Product);
-
-                }
-                    TotalPris += PrisPrVare;
-                }
-
-                Console.WriteLine($"Totalpris: {TotalPris}. Sum antall produkter{NumOfProducts}");
             }
-
-
+            foreach (var product in _products)
+            {
+                product.printCartItem();
+                totalPris += product.CalculatePrice();
+            }
+            Console.WriteLine($"Totalpris: {totalPris}. Sum antall produkter {SumAllProducts()}");
         }
-        public int GetAmountPerProduct(Item item)
+        public int SumAllProducts()
         {
-            int Count = 0;
-            foreach (var product in Items)
+            int totalCount = 0;
+            foreach (var item in _products)
             {
-                if (product == item)
-                {
-                    Count++;
-                }
+                totalCount += item._amount;
             }
-            return Count;
+            return totalCount;
         }
-
-
-
     }
 }
