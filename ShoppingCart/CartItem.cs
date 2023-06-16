@@ -1,19 +1,17 @@
-﻿
-
-namespace ShoppingCartOppgave
+﻿namespace ShoppingCartOppgave
 {
     public class CartItem
     {
-        public Item _addedItem;
-        public int _amount;
+        private Item _addedItem;
+        private int _amount;
         public CartItem(Item chosenProduct, int amount)
         {
             _amount = amount;
             _addedItem = chosenProduct;
         }
-        public int CalculatePrice()
+        public int CalculatePriceByItem()
         {
-            return _amount * _addedItem._price;
+            return _addedItem.CalculatePrice(_amount);
         }
         public void IncreaseAmount(int amount)
         {
@@ -22,9 +20,21 @@ namespace ShoppingCartOppgave
 
         public void printCartItem()
         {
-            Console.WriteLine($"Handlekurv: Produkt: {_addedItem._productName}, Antall:" +
-                $" {_amount}, Pris pr stk: {_addedItem._price}, " +
-                    $"totalpris for produkt: {CalculatePrice()}");
+            _addedItem.printProduct();
+            Console.WriteLine(
+                $" Antall: {_amount}," + $"totalpris for produkt: {CalculatePriceByItem()}");
+        }
+        public Item? ItemsAlign(Item item)
+        {
+            if (_addedItem == item)
+            {
+                return _addedItem;
+            }
+            else return null;
+        }
+        public int AddAmount(int totalSoFar)
+        {
+            return _amount + totalSoFar;
         }
     }
 }

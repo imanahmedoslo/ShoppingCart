@@ -1,18 +1,15 @@
-﻿
-
-
-namespace ShoppingCartOppgave
+﻿namespace ShoppingCartOppgave
 {
     class ShoppingCart
     {
-        public readonly List<CartItem> _products;
+        private List<CartItem> _products;
         public ShoppingCart()
         {
             _products = new List<CartItem>();
         }
         public void AddItemsToCart(Item item, int amount)
         {
-            var existingProduct = _products.Find(product => product._addedItem == item);
+            var existingProduct = _products.Find(product => product.ItemsAlign(item) == item);
             if (existingProduct == null)
             {
                 var newestItem = new CartItem(item, amount);
@@ -34,7 +31,7 @@ namespace ShoppingCartOppgave
             foreach (var product in _products)
             {
                 product.printCartItem();
-                totalPris += product.CalculatePrice();
+                totalPris += product.CalculatePriceByItem();
             }
             Console.WriteLine($"Totalpris: {totalPris}. Sum antall produkter {SumAllProducts()}");
         }
@@ -43,7 +40,7 @@ namespace ShoppingCartOppgave
             int totalCount = 0;
             foreach (var item in _products)
             {
-                totalCount += item._amount;
+                totalCount = item.AddAmount(totalCount);
             }
             return totalCount;
         }
