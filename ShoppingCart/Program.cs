@@ -9,7 +9,7 @@ MyShoppingCart.PrintProductList();
 MyShoppingCart.AddItemsToCart(a, 1);
 MyShoppingCart.AddItemsToCart(b, 1);
 MyShoppingCart.AddItemsToCart(c, 2);
-MyShoppingCart.AddItemsToCart(a, 1);
+MyShoppingCart.AddItemsToCart(a, 4);
 MyShoppingCart.PrintProductList();
 
 
